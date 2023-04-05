@@ -4,11 +4,15 @@ class _ToastWidget extends StatefulWidget {
   final String message;
   final int seconds;
   final VoidCallback whenCompleted;
+  final BoxDecoration? decoration;
+  final TextStyle? style;
   const _ToastWidget({
     Key? key,
     required this.message,
     required this.seconds,
     required this.whenCompleted,
+    this.decoration,
+    this.style,
   }) : super(key: key);
 
   @override
@@ -41,19 +45,17 @@ class _ToastWidgetState extends State<_ToastWidget>
 
   @override
   Widget build(BuildContext context) {
-    return FadeTransition(
-      opacity: opacity,
-      child: Align(
-        alignment: Alignment.topCenter,
+    return SafeArea(
+      child: FadeTransition(
+        opacity: opacity,
         child: Container(
-          decoration: BoxDecoration(
+          decoration: widget.decoration ?? BoxDecoration(
             color: Colors.black.withOpacity(.65),
             borderRadius: const BorderRadius.all(Radius.circular(32)),
           ),
-          margin: EdgeInsets.only(
-            left: 16,
-            right: 16,
-            bottom: MediaQuery.of(context).size.height * .125,
+          margin: const EdgeInsets.only(
+            left: 20,
+            right: 20,
           ),
           padding: const EdgeInsets.symmetric(
             horizontal: 24,
@@ -61,7 +63,7 @@ class _ToastWidgetState extends State<_ToastWidget>
           ),
           child: Text(
             widget.message,
-            style: const TextStyle(
+            style: widget.style ?? const TextStyle(
               fontSize: 14,
               color: Colors.white,
               decoration: TextDecoration.none,
@@ -78,8 +80,10 @@ class ToastWidget {
   OverlayEntry? _overlayEntry;
   final String message;
   final int seconds;
+  final BoxDecoration? decoration;
+  final TextStyle? style;
 
-  ToastWidget({required this.message, this.seconds = 2});
+  ToastWidget({required this.message, this.seconds = 2, this.decoration, this.style});
 
   Future<void> show(BuildContext context) async {
     createOverlay();
@@ -88,10 +92,15 @@ class ToastWidget {
 
   void createOverlay() {
     _overlayEntry = OverlayEntry(builder: (BuildContext context) {
-      return _ToastWidget(
-        message: message,
-        seconds: seconds,
-        whenCompleted: removeOverlay,
+      return Align(
+        alignment: Alignment.center,
+        child: _ToastWidget(
+          message: message,
+          seconds: seconds,
+          decoration: decoration,
+          style: style,
+          whenCompleted: removeOverlay,
+        ),
       );
     });
   }
