@@ -45,32 +45,34 @@ class _ToastWidgetState extends State<_ToastWidget>
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: FadeTransition(
-        opacity: opacity,
-        child: Container(
-          decoration: widget.decoration ??
-              BoxDecoration(
-                color: Colors.black.withOpacity(.65),
-                borderRadius: const BorderRadius.all(Radius.circular(32)),
-              ),
-          margin: const EdgeInsets.only(
-            left: 20,
-            right: 20,
-          ),
-          padding: const EdgeInsets.symmetric(
-            horizontal: 24,
-            vertical: 14,
-          ),
-          child: Text(
-            widget.message,
-            style: widget.style ??
-                const TextStyle(
-                  fontSize: 14,
-                  color: Colors.white,
-                  decoration: TextDecoration.none,
-                  fontWeight: FontWeight.normal,
+    return Material(
+      child: SafeArea(
+        child: FadeTransition(
+          opacity: opacity,
+          child: Container(
+            decoration: widget.decoration ??
+                BoxDecoration(
+                  color: Colors.black.withOpacity(.65),
+                  borderRadius: const BorderRadius.all(Radius.circular(32)),
                 ),
+            margin: const EdgeInsets.only(
+              left: 20,
+              right: 20,
+            ),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 24,
+              vertical: 14,
+            ),
+            child: Text(
+              widget.message,
+              style: widget.style ??
+                  const TextStyle(
+                    fontSize: 14,
+                    color: Colors.white,
+                    decoration: TextDecoration.none,
+                    fontWeight: FontWeight.normal,
+                  ),
+            ),
           ),
         ),
       ),
