@@ -49,10 +49,11 @@ class _ToastWidgetState extends State<_ToastWidget>
       child: FadeTransition(
         opacity: opacity,
         child: Container(
-          decoration: widget.decoration ?? BoxDecoration(
-            color: Colors.black.withOpacity(.65),
-            borderRadius: const BorderRadius.all(Radius.circular(32)),
-          ),
+          decoration: widget.decoration ??
+              BoxDecoration(
+                color: Colors.black.withOpacity(.65),
+                borderRadius: const BorderRadius.all(Radius.circular(32)),
+              ),
           margin: const EdgeInsets.only(
             left: 20,
             right: 20,
@@ -63,12 +64,13 @@ class _ToastWidgetState extends State<_ToastWidget>
           ),
           child: Text(
             widget.message,
-            style: widget.style ?? const TextStyle(
-              fontSize: 14,
-              color: Colors.white,
-              decoration: TextDecoration.none,
-              fontWeight: FontWeight.normal,
-            ),
+            style: widget.style ??
+                const TextStyle(
+                  fontSize: 14,
+                  color: Colors.white,
+                  decoration: TextDecoration.none,
+                  fontWeight: FontWeight.normal,
+                ),
           ),
         ),
       ),
@@ -77,20 +79,29 @@ class _ToastWidgetState extends State<_ToastWidget>
 }
 
 class ToastWidget {
-  OverlayEntry? _overlayEntry;
-  final String message;
-  final int seconds;
-  final BoxDecoration? decoration;
-  final TextStyle? style;
-
-  ToastWidget({required this.message, this.seconds = 2, this.decoration, this.style});
-
-  Future<void> show(BuildContext context) async {
-    createOverlay();
+  static OverlayEntry? _overlayEntry;
+  static void show({
+    required BuildContext context,
+    required String message,
+    int seconds = 2,
+    BoxDecoration? decoration,
+    TextStyle? style,
+  }) {
+    _createOverlay(
+      message: message,
+      seconds: seconds,
+      decoration: decoration,
+      style: style,
+    );
     Overlay.of(context)?.insert(_overlayEntry!);
   }
 
-  void createOverlay() {
+  static void _createOverlay({
+    required String message,
+    int seconds = 2,
+    BoxDecoration? decoration,
+    TextStyle? style,
+  }) {
     _overlayEntry = OverlayEntry(builder: (BuildContext context) {
       return Align(
         alignment: Alignment.center,
@@ -99,13 +110,13 @@ class ToastWidget {
           seconds: seconds,
           decoration: decoration,
           style: style,
-          whenCompleted: removeOverlay,
+          whenCompleted: _removeOverlay,
         ),
       );
     });
   }
 
-  void removeOverlay() {
+  static void _removeOverlay() {
     _overlayEntry?.remove();
     _overlayEntry = null;
   }
