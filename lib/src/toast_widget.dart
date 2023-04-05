@@ -1,5 +1,24 @@
 import 'package:flutter/material.dart';
 
+enum ShowIn {
+  topCenter,
+  center,
+  bottomCenter,
+}
+
+extension ShowInAlignment on ShowIn {
+  Alignment get align {
+    switch (this) {
+      case ShowIn.topCenter:
+        return Alignment.topCenter;
+      case ShowIn.bottomCenter:
+        return Alignment.bottomCenter;
+      default:
+        return Alignment.center;
+    }
+  }
+}
+
 class _ToastWidget extends StatefulWidget {
   final String message;
   final int seconds;
@@ -31,7 +50,7 @@ class _ToastWidgetState extends State<_ToastWidget>
     )..forward();
     Future.delayed(Duration(seconds: widget.seconds), () {
       opacity.reverse().then(
-            (value) => widget.whenCompleted,
+            (_) => widget.whenCompleted(),
           );
     });
     super.initState();
@@ -45,10 +64,11 @@ class _ToastWidgetState extends State<_ToastWidget>
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      child: SafeArea(
-        child: FadeTransition(
-          opacity: opacity,
+    return SafeArea(
+      child: FadeTransition(
+        opacity: opacity,
+        child: Material(
+          color: Colors.transparent,
           child: Container(
             decoration: widget.decoration ??
                 BoxDecoration(
@@ -86,12 +106,14 @@ class ToastWidget {
     required BuildContext context,
     required String message,
     int seconds = 2,
+    ShowIn showIn = ShowIn.center,
     BoxDecoration? decoration,
     TextStyle? style,
   }) {
     _createOverlay(
       message: message,
       seconds: seconds,
+      showIn: showIn,
       decoration: decoration,
       style: style,
     );
@@ -100,13 +122,15 @@ class ToastWidget {
 
   static void _createOverlay({
     required String message,
-    int seconds = 2,
+    required int seconds,
+    required ShowIn showIn,
     BoxDecoration? decoration,
     TextStyle? style,
   }) {
     _overlayEntry = OverlayEntry(builder: (BuildContext context) {
-      return Align(
-        alignment: Alignment.center,
+      return Container(
+        padding: const EdgeInsets.symmetric(vertical: 20),
+        alignment: showIn.align,
         child: _ToastWidget(
           message: message,
           seconds: seconds,
